@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="Shift_JIS">
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas1" width="400" height="300">
+	</canvas>
+		<script>
+			//DOMオブジェクトの取得
+			var canvas = document.getElementById("canvas1");
+			//描画コンテキストの取得
+			var context = canvas.getContext("2d");
+			
+			//線の色の指定
+			context.strokeStyle = "red";
+			//塗りつぶしの色の指定
+			context.fillStyle = "blue";
+			
+			//パスの開始
+			context.beginPath();
+			//円の描画
+			context.arc(50,50,50,0,2*Math.PI,true);
+			//パスの描画
+			context.fill();	
+			
+		</script>
+</body>
+</html>
