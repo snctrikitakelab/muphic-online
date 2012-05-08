@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset=Shift_JIS">
+	<title>muphic_背景</title>
+</head>
+<body>
+	<canvas id="canvas1" width="1300" height="650" style="border:1px solid #CCC;">
+	</canvas>
+		<script type="text/javascript">
+			var canvas =document.getElementById("canvas1");
+			var context = canvas.getContext("2d");		
+			var cW = 1300;
+			var cH = 650;
+			var mouseX;
+			var mouseY;
+			
+			window.onload = function(){
+
+				draw1()
+				draw2()
+			}	
+	
+			function draw1(){
+				
+				canvas.onmousedown = mouseDownListner;
+				
+				function mouseDownListner(e){
+					context.clearRect(0,0,cW,cH);
+					adjustXY(e);
+					context.globalAlpha = 1;
+					context.fillStyle = "#666666";
+					context.fillText("X座標：" + mouseX, 5, 12);
+					context.fillText("Y座標：" + mouseY, 5, 24);
+					context.fillText("イベント：マウスダウン", 5, 36);
+					//context.strokeRect(50,50,100,80);
+					draw2();
+				}
+							
+				function adjustXY(e){
+					var rect = e.target.getBoundingClientRect();
+					mouseX = e.clientX - rect.left;
+					mouseY = e.clientY - rect.top;
+				}
+			}
+			
+			function draw2(){
+				var picture = new Image();
+				picture.onload = function(){context.drawImage(picture,50,50);};
+				picture.src = "000372.gif";
+				var picture2 = new Image();
+				picture2.onload = function(){context.drawImage(picture2,50,150);};
+				picture2.src = "000574.gif";
+				var picture3 = new Image();
+				picture3.onload = function(){context.drawImage(picture3,50,250);};
+				picture3.src = "gomibako.jpg";
+				var picture4 = new Image();
+				picture4.onload = function(){context.drawImage(picture4,50,350);};
+				picture4.src = "piano.gif";
+			}		
+		</script>
+	</body>
+</html>
