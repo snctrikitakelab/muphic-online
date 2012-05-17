@@ -6,9 +6,9 @@ $(function () {
 	var cH = 650;
 	var mouseX;
 	var mouseY;
-	
+		
 	draw2();
-			
+
 	window.onload = function(){
 		draw();
 		draw1();
