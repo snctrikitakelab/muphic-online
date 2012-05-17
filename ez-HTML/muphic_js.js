@@ -111,15 +111,16 @@ $(function () {
 	}
 			
 	function draw2(){
-		var picture = new Image();
-		picture.onload = function(){context.drawImage(picture,25,50);};
-		picture.src = "000372.gif";
-		var picture2 = new Image();
-		picture2.onload = function(){context.drawImage(picture2,25,150);};
-		picture2.src = "000574.gif";
-		var picture3 = new Image();
-		picture3.onload = function(){context.drawImage(picture3,25,250);};
-		picture3.src = "gomibako.jpg";
+		var start = new Image();
+		start.src = "start_button.gif";
+		start.onload = function(){context.drawImage(start,25,50);};
+		//start.src = "start_button.gif";
+		var stop = new Image();
+		stop.onload = function(){context.drawImage(stop,25,150);};
+		stop.src = "stop_button.gif";
+		var gomi = new Image();
+		gomi.onload = function(){context.drawImage(gomi,25,250);};
+		gomi.src = "gomibako.jpg";
 		var piano = new Image();
 		piano.onload = function(){context.drawImage(piano,50,550);};
 		piano.src = "piano.jpg";
