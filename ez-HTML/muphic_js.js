@@ -114,20 +114,16 @@ $(function () {
 			
 	function draw2(){
 		var picture = new Image();
-		//picture.onload = function(){context.drawImage(picture,25,50);};
-		picture.src = "start_button.gif";
+		picture.src = "gazou/start_button.gif";
 		context.drawImage(picture,25,50);
 		var picture2 = new Image();
-		//picture2.onload = function(){context.drawImage(picture2,25,150);};
-		picture2.src = "stop_button.gif";
+		picture2.src = "gazou/stop_button.gif";
 		context.drawImage(picture2,25,150);
 		var picture3 = new Image();
-		//picture3.onload = function(){context.drawImage(picture3,25,250);};
-		picture3.src = "gomibako.jpg";
+		picture3.src = "gazou/gomibako.jpg";
 		context.drawImage(picture3,25,250);
 		var piano = new Image();
-		//piano.onload = function(){context.drawImage(piano,50,550);};
-		piano.src = "piano.jpg";
+		piano.src = "gazou/piano.jpg";
 		context.drawImage(piano,50,550);
 	}
 
