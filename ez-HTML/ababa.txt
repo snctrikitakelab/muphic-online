@@ -1,0 +1,144 @@
+$(function () {
+	var canvas =document.getElementById("canvas1");		
+	var context = canvas.getContext("2d");
+	context.save();		
+	var cW = 1300;
+	var cH = 650;
+	var mouseX;
+	var mouseY;
+	
+	draw2();
+			
+	window.onload = function(){
+		draw();
+		draw1();
+		draw2();
+	}	
+					
+	function draw(){
+		context.strokeStyle = "black";
+		context.fillStyle = "white";	
+		context.beginPath();
+		context.moveTo(150,100);
+		context.lineTo(150,500);
+		context.lineTo(1300,500);
+		context.lineTo(1300,100);
+		context.closePath();
+		context.fill();
+		context.stroke();
+
+		context.beginPath();
+		for(var i=1;i<=10;i++){	
+			var n = 40*i;
+			context.moveTo(150,100+n);
+			context.lineTo(1300,100+n);
+		}
+		context.stroke();
+				
+		context.beginPath();
+		for(var i=1;i<=16;i++){	
+			var n = 71.875*i;
+			context.moveTo(150+n,100);
+			context.lineTo(150+n,500);
+		}
+		context.stroke();
+	}	
+			
+	function draw1(){
+				
+		canvas.onmousedown = mouseDownListner;
+				
+		function mouseDownListner(e){
+			context.clearRect(0,0,cW,cH);
+			adjustXY(e);
+			context.globalAlpha = 1;
+			context.fillStyle = "#666666";
+			context.fillText("X座標：" + mouseX, 5, 12);
+			context.fillText("Y座標：" + mouseY, 5, 24);
+			context.fillText("イベント：マウスダウン", 5, 36);
+			//context.strokeRect(50,50,100,80);
+			draw();
+			draw2();
+			check();
+		}
+				
+		function check(){
+			if(mouseX>=25 && mouseX<=125){				//ボタンクリックしたときにアラートを出す
+				if(mouseY>=50 && mouseY<150){			//再生ボタン
+					alert("再生！");
+				}
+				if(mouseY>=150 && mouseY<250){			//停止ボタン
+					alert("停止！");
+				}
+				if(mouseY>=250 && mouseY<350){			//削除ボタン
+					alert("削除！");
+				}
+				if(mouseY>=550 && mouseY<650){			//ピアノボタン
+					alert("ピアノ！");
+				}
+			}		
+		
+			if(mouseX>=150 && mouseX<=1300){
+				if(mouseY>=460 && mouseY<500){
+					output(1);
+				}
+				else if(mouseY>=420 && mouseY<460){
+					output(2);
+				}
+				else if(mouseY>=380 && mouseY<420){
+					output(3);
+				}
+				else if(mouseY>=340 && mouseY<380){
+					output(4);
+				}
+				else if(mouseY>=300 && mouseY<340){
+					output(5);
+				}
+				else if(mouseY>=260 && mouseY<300){
+					output(6);
+				}
+				else if(mouseY>=220 && mouseY<260){
+					output(7);
+				}
+				else if(mouseY>=180 && mouseY<220){
+					output(8);
+				}
+				else if(mouseY>=140 && mouseY<180){
+					output(9);
+				}
+				else if(mouseY>=100 && mouseY<140){
+					output(10);
+				}
+			}
+		}
+				
+		function output(e){
+			if(e>=9){
+				alert("音源ない(´・ω・｀)");
+				draw2();
+			}
+			else	document.getElementById("piano_"+e).play();
+		}
+							
+		function adjustXY(e){
+			var rect = e.target.getBoundingClientRect();
+			mouseX = e.clientX - rect.left;
+			mouseY = e.clientY - rect.top;
+		}
+	}
+			
+	function draw2(){
+		var start = new Image();
+		start.src = "gazou/start_button.gif";
+		context.drawImage(start,25,50);
+		var stop = new Image();
+		stop.src = "gazou/stop_button.gif";
+		context.drawImage(stop,25,150);
+		var gomi = new Image();
+		gomi.src = "gazou/gomibako.jpg";
+		context.drawImage(gomi,25,250);
+		var piano = new Image();
+		piano.src = "gazou/piano_1.gif";
+		context.drawImage(piano,50,550);
+	}
+});
