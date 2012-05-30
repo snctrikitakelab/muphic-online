@@ -110,15 +110,9 @@ $(function () {
 			}
 			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
 				if(mouseY>=50 && mouseY<150){
-//					var moveSpeed = 100;
-					imgpos = array[0][0]-20;
-//					var moveStep = 5;
-//					var imgpos1 = start(imgpos);
-//					alert(imgpos);
-					start();
-//					setTimeout('start()',moveSpeed);
-//					alert(imgpos);
-					
+					imgpos = imgget();
+					alert(imgpos);
+					start();				
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
@@ -143,12 +137,34 @@ $(function () {
 			}
 		}
 		
+		//imgget
+		function imgget(){
+			var a=0;
+			imgpos = 0;
+			while(a < 25){
+				if(imgpos < array[0][a]){
+					imgpos = array[0][a];
+					a++;
+				}
+				else{
+					a++;
+				}
+				
+			}
+			return imgpos;
+		}
+		
+		
 		//再生処理
 		function start(){
 			imgpos -= moveStep;
 			var onpu1 = new Image();
 			onpu1.src = "gazou/onpu.gif";
-			context.drawImage(onpu1,imgpos,array[1][0]-25);				
+//			for(var i=0;i<=24;i++){
+//			alert(i);
+			
+				context.drawImage(onpu1,imgpos,array[1][0]-25);
+//			}
 			if(imgpos < 150){
 				imgpos = array[0][0];
 			}

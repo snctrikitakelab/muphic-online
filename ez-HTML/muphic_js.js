@@ -6,15 +6,37 @@ $(function () {
 	var cH = 650;
 	var mouseX;
 	var mouseY;
+	var k=0;
+	var array = new Array(25);
+	for(var i=0;i<2;i++){
+		array[i]=[' ',' ',' '];
+	}
+	var pf=0;	//ピアノフラグ
+	var start_f=0;	//スタートフラグ
+	var stop_f=0;	//ストップフラグ
+	var gomi_f=0;	//ゴミフラグ
 	
+	var moveStep = 1;
+	var moveSpeed = 20;
+	var imgpos = 0;
 	draw2();
-			
+
 	window.onload = function(){
+		reset();
 		draw();
-		draw1();
 		draw2();
+		draw1();
 	}	
-					
+	
+	//配列初期化
+	function reset(){
+		for(var i=0;i<=1;i++){
+			for(var j=0;j<=24;j++){
+				array[i][j]=null;
+			}
+		}
+	}
+	//譜面作成関数				
 	function draw(){
 		context.strokeStyle = "black";
 		context.fillStyle = "white";	
@@ -43,11 +65,11 @@ $(function () {
 		}
 		context.stroke();
 	}	
-			
+	//ボタン関連関数		
 	function draw1(){
 				
 		canvas.onmousedown = mouseDownListner;
-				
+		//クリック検出関数		
 		function mouseDownListner(e){
 			context.clearRect(0,0,cW,cH);
 			adjustXY(e);
@@ -56,47 +78,121 @@ $(function () {
 			context.fillText("X座標：" + mouseX, 5, 12);
 			context.fillText("Y座標：" + mouseY, 5, 24);
 			context.fillText("イベント：マウスダウン", 5, 36);
-			//context.strokeRect(50,50,100,80);
 			draw();
-			draw2();
+			if(pf==1){
+				copy("piano",e);
+			}
 			check();
+			draw2();
 		}
-				
+		//クリック位置検出関数		
 		function check(){
-			if(mouseX>=150 && mouseX<=1300){
-				if(mouseY>=460 && mouseY<500){
-					output(1);
+			humen(mouseX,mouseY);
+			if(mouseX>=50 && mouseX<=150){					//音ボタンクリック
+				if(mouseY>=550 && mouseY<650){
+					if(pf==0){
+						pf=1;
+					}
+					else{
+						pf=0;
+					}
 				}
-				else if(mouseY>=420 && mouseY<460){
-					output(2);
+			}
+			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
+				if(mouseY>=50 && mouseY<150){
+					imgpos = imgget();
+//					alert(imgpos);
+					start();				
 				}
-				else if(mouseY>=380 && mouseY<420){
-					output(3);
+			}
+			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
+				if(mouseY>=150 && mouseY<250){
+					stop();
 				}
-				else if(mouseY>=340 && mouseY<380){
-					output(4);
+			}
+			if(mouseX>=25 && mouseX<=125){					//ゴミ箱ボタンクリック
+				if(mouseY>=250 && mouseY<350){
+					gomi();
 				}
-				else if(mouseY>=300 && mouseY<340){
-					output(5);
-				}
-				else if(mouseY>=260 && mouseY<300){
-					output(6);
-				}
-				else if(mouseY>=220 && mouseY<260){
-					output(7);
-				}
-				else if(mouseY>=180 && mouseY<220){
-					output(8);
-				}
-				else if(mouseY>=140 && mouseY<180){
-					output(9);
-				}
-				else if(mouseY>=100 && mouseY<140){
-					output(10);
+			}			
+			
+		}
+		
+		//譜面関数
+		function humen(mouseX,mouseY){
+			if(pf==1){
+				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
+					var count=0;
+					for(var i=500;i>=140;i-=40){
+						count++;
+						if(mouseY>=i-40 && mouseY<i){
+							output(count);
+						}
+					}
 				}
 			}
 		}
+		
+		//画像複製関数
+		function copy(icon,e){
+			adjustXY(e);
+			if(mouseX>=150 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
+				array[0][k]=mouseX;
+				array[1][k]=mouseY;
+				k++;
+			}
+		}
+		
+		//imgget
+		function imgget(){
+			var a=0;
+			imgpos = 0;
+			while(a < 25){
+				if(imgpos < array[0][a]-25){
+					imgpos = array[0][a]-25;
+					a++;
+				}
+				else{
+					a++;
+				}
 				
+			}
+			return imgpos;
+		}
+		
+		
+		//再生処理
+		function start(){
+			imgpos -= moveStep;
+			var onpu1 = new Image();
+			onpu1.src = "gazou/onpu.gif";
+//			for(var i=0;i<=24;i++){
+//			alert(i);
+			
+				context.drawImage(onpu1,imgpos,array[1][0]-25);
+				outsound(imgpos+20,array[1][0]);						//音符画像の真ん中で音を出すためにxのみ+20
+//			}
+			if(imgpos <= 130){
+				imgpos = array[0][0];
+//				outsound(imgpos,array[1][0]);
+			}
+			else{
+				var imgpos2 = imgpos;
+				setTimeout(start,moveSpeed);
+			}
+		}
+		
+		//停止処理
+		function stop(){
+			alert("stop");
+		}
+		
+		//削除処理
+		function gomi(){
+			alert("gomi");
+		}
+		
+		//音出力関数				
 		function output(e){
 			if(e>=9){
 				alert("音源ない(´・ω・｀)");
@@ -104,83 +200,50 @@ $(function () {
 			}
 			else	document.getElementById("piano_"+e).play();
 		}
-							
+		
+		//音出力判断関数
+		function outsound(x,y){
+			if(x <= 150){
+				humen(x,y);
+			}
+		}		
+			
+		//クリック座標検出関数					
 		function adjustXY(e){
 			var rect = e.target.getBoundingClientRect();
 			mouseX = e.clientX - rect.left;
 			mouseY = e.clientY - rect.top;
 		}
 	}
-			
+	
+	//画像出力関数		
 	function draw2(){
-		var picture = new Image();
-		picture.src = "gazou/start_button.gif";
-		context.drawImage(picture,25,50);
-		var picture2 = new Image();
-		picture2.src = "gazou/stop_button.gif";
-		context.drawImage(picture2,25,150);
-		var picture3 = new Image();
-		picture3.src = "gazou/gomibako.jpg";
-		context.drawImage(picture3,25,250);
-		var piano = new Image();
-		piano.src = "gazou/piano.jpg";
-		context.drawImage(piano,50,550);
-	}
-
-	//DOMオブジェクトの取得
-	var canvas1 = document.getElementById("canvas1");
-	var canvas2 = document.getElementById("canvas1");
-	//描画コンテキストの取得
-	var context1 = canvas1.getContext("2d");
-	var context2 = canvas2.getContext("2d");
-	//var context3 = canvas.getContext("2d");
-	//コンテキストの状態の記憶
-	context1.save();
-	context2.save();
-	//context3.save();
-
-	drawcanvas();
-
-	$('#canvas1').mousedown(function (event) {
-		var X = event.pageX - $(this).offset().left;
-		var Y = event.pageY - $(this).offset().top;
-    		if(context1.isPointInPath(X, Y) === true) {
-			alert('再生！');
-		}	else if(context2.isPointInPath(X, Y) === true) {
-			alert('停止！');
-		}	
-	});
-
-	function drawcanvas() {
-		//塗りつぶしの色の指定
-		context1.fillStyle = red;
-		context2.fillStyle = red;
-		//context3.fillStyle = #000000;
-		//明度の変更
-		context1.globalAlpha = 1.0;
-		context2.globalAlpha = 0.0;
-		//context3.globalAlpha = 0.0;
-		//パスの開始
-		context1.beginPath();
-		context2.beginPath();
-		//context3.beginPath();
-		//円の描画
-		context1.arc(100,150,50,0,2*Math.PI,true);
-		context2.arc(50,25,150,0,2*Math.PI,true);
-		//context3.rect(50,50,50,0,2*Math.PI,true);
-		//パスの描画
-		context1.fill();
-		context2.fill();
-		//context3.fill();
-		//コンテキストの初期化
-		context1.restore();
-		context1.save();
-		context2.restore();
-		context2.save();
-		//context3.restore();
-		//context3.save();
+		var start = new Image();
+		start.src = "gazou/start_button.png";
+		context.drawImage(start,25,50);
+		var stop = new Image();
+		stop.src = "gazou/stop_button.png";
+		context.drawImage(stop,25,150);
+		var gomi = new Image();
+		gomi.src = "gazou/gomibako.jpg";
+		context.drawImage(gomi,25,250);
 		
-		draw();
-		draw2();
+		var piano = new Image();
+		if(pf==1){
+			piano.src = "gazou/piano_2.gif";
+		}
+		else{
+			piano.src = "gazou/piano_1.gif";
+		}
+		context.drawImage(piano,50,550);
+		
+		for(var i=0;i<=24;i++){
+			if(array[0][i] != null){
+				var onpu = new Image();
+				onpu.src = "gazou/onpu.gif";
+				context.drawImage(onpu,array[0][i]-20,array[1][i]-25);
+			}
+			else break;
+		}
 	}
 });
