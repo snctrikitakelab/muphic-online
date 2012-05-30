@@ -17,7 +17,8 @@ $(function () {
 	var gomi_f=0;	//ƒSƒ~ƒtƒ‰ƒO
 	
 	var moveStep = 5;
-	var moveSpeed = 100;	
+	var moveSpeed = 100;
+	var imgpos = 0;
 	draw2();
 
 	window.onload = function(){
@@ -109,13 +110,13 @@ $(function () {
 			}
 			if(mouseX>=25 && mouseX<=125){					//Ä¶ƒ{ƒ^ƒ“ƒNƒŠƒbƒN
 				if(mouseY>=50 && mouseY<150){
-					var moveSpeed = 100;
-					var imgpos = array[0][0]-20;
+//					var moveSpeed = 100;
+					imgpos = array[0][0]-20;
 //					var moveStep = 5;
 //					var imgpos1 = start(imgpos);
 //					alert(imgpos);
-					start(imgpos);
-//					setTimeout('start(imgpos)',moveSpeed);
+					start();
+//					setTimeout('start()',moveSpeed);
 //					alert(imgpos);
 					
 				}
@@ -143,71 +144,18 @@ $(function () {
 		}
 		
 		//Ä¶ˆ—
-		function start(imgpos){
-//			alert("start");
-//			for(var time=0;time<=(array[0][0]-20);time++){
-//				for(var i=0;i<1000;i++){
-//					for(var j=0;j<1000;j++){
-//					}			
-//				}
-//				var x = array[0][0];
-//				var pos = (x-20)-time;	
-//				var onpu = new Image();
-//				onpu.src = "gazou/onpu.gif";
-//				context.drawImage(onpu,pos,array[1][0]-25);
-//			}
-//			var imgpos = array[0][0];
-//			alert("start");
-//			var moveStep = 5;
-//			var moveSpeed = 100;
-//			alert("start");
-//			document.getElementById("onpu").style.top = array[1][0];
-//			alert("start");
-//			document.getElementById("onpu").style.left = imgpos;
-//			if(150-array[0][0] > 0){
-//				imgpos += moveStep;
-//				if(imgpos > 150){
-//					imgpos = array[0][0];
-//				}	
-//			}
-//			else{
-//			alert("start");
-			while(imgpos>=150){
-//				alert(imgpos);
-				imgpos -= moveStep;
-//				var imgpos1 = imgpos;
-//				alert(imgpos);
-//				alert(imgpos1);
-				if(imgpos < 150){
-					imgpos = array[0][0];
-//					alert("2.5");
-					break;
-				}
-	//			alert("3");
-				var onpu1 = new Image();
-				onpu1.src = "gazou/onpu.gif";
-				context.drawImage(onpu1,imgpos,array[1][0]-25);
-//				alert(imgpos);
-				Sleep(1);				//1•b‘Ò‚Â
-			}	
-//			}
-//			document.getElementById("onpu").style.visibility="visible";
-//			setTimeout("start(imgpos)",moveSpeed);
-//			return(imgpos1);
-
-//			alert("2");
-		}
-		
-		function Sleep(T){
-//			alert("a");
-			var d1 = new Date().getTime(); 
-//			var d2 = new Date().getTime(); 
-			var d2 = d1;
-			while( d2 < d1+1000*T ){    //T•b‘Ò‚Â 
-				d2=new Date().getTime();
+		function start(){
+			imgpos -= moveStep;
+			var onpu1 = new Image();
+			onpu1.src = "gazou/onpu.gif";
+			context.drawImage(onpu1,imgpos,array[1][0]-25);				
+			if(imgpos < 150){
+				imgpos = array[0][0];
 			}
-//			alert("b");
-			return; 
+			else{
+				var imgpos2 = imgpos;
+				setTimeout(start,moveSpeed);
+			}
 		}
 		
 		//’âŽ~ˆ—
