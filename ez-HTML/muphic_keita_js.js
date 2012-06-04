@@ -16,9 +16,10 @@ $(function () {
 	var stop_f=0;	//ストップフラグ
 	var gomi_f=0;	//ゴミフラグ
 	
-	var moveStep = 5;
-	var moveSpeed = 100;
-	var imgpos = 0;
+	var moveStep = 1;
+	var moveSpeed = 20;
+	var imgpos_x = 0;
+	var imgpos_y = 0;
 	draw2();
 
 	window.onload = function(){
@@ -67,8 +68,8 @@ $(function () {
 	}	
 	//ボタン関連関数		
 	function draw1(){
-				
 		canvas.onmousedown = mouseDownListner;
+		
 		//クリック検出関数		
 		function mouseDownListner(e){
 			context.clearRect(0,0,cW,cH);
@@ -85,19 +86,10 @@ $(function () {
 			check();
 			draw2();
 		}
+		
 		//クリック位置検出関数		
 		function check(){
-			if(pf==1){
-				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
-					var count=0;
-					for(var i=500;i>=140;i-=40){
-						count++;
-						if(mouseY>=i-40 && mouseY<i){
-							output(count);
-						}
-					}
-				}
-			}
+			humen(mouseX,mouseY);
 			if(mouseX>=50 && mouseX<=150){					//音ボタンクリック
 				if(mouseY>=550 && mouseY<650){
 					if(pf==0){
@@ -110,9 +102,10 @@ $(function () {
 			}
 			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
 				if(mouseY>=50 && mouseY<150){
-					imgpos = imgget();
-					alert(imgpos);
-					start();				
+					imgpos_x = imgget_x();
+					start();
+//					alert(imgpos_x);
+//					alert(imgpos_y);		
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
@@ -124,9 +117,24 @@ $(function () {
 				if(mouseY>=250 && mouseY<350){
 					gomi();
 				}
-			}			
-			
+			}
 		}
+		
+		//譜面クリック位置検出関数
+		function humen(mouseX,mouseY){
+			if(pf==1){
+				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
+					var count=0;
+					for(var i=500;i>=140;i-=40){
+						count++;
+						if(mouseY>=i-40 && mouseY<i){
+							output(count);
+						}
+					}
+				}
+			}
+		}
+		
 		//画像複製関数
 		function copy(icon,e){
 			adjustXY(e);
@@ -137,40 +145,38 @@ $(function () {
 			}
 		}
 		
-		//imgget
-		function imgget(){
-			var a=0;
-			imgpos = 0;
+		//x,y座標の最大値取得関数
+		function imgget_x(){
+			var a = 0;
+			imgpos_x = 0;
+			imgpos_y = 0;
 			while(a < 25){
-				if(imgpos < array[0][a]){
-					imgpos = array[0][a];
+				if(imgpos_x < array[0][a]-25){
+					imgpos_x = array[0][a]-25;
+					imgpos_y = a;
 					a++;
 				}
 				else{
 					a++;
-				}
-				
+				}	
 			}
-			return imgpos;
-		}
-		
+			return imgpos_x;
+		}	
 		
 		//再生処理
 		function start(){
-			imgpos -= moveStep;
-			var onpu1 = new Image();
-			onpu1.src = "gazou/onpu.gif";
-//			for(var i=0;i<=24;i++){
-//			alert(i);
-			
-				context.drawImage(onpu1,imgpos,array[1][0]-25);
-//			}
-			if(imgpos < 150){
-				imgpos = array[0][0];
-			}
-			else{
-				var imgpos2 = imgpos;
-				setTimeout(start,moveSpeed);
+			if(imgpos_x != 0){
+				imgpos_x -= moveStep;
+				var onpu1 = new Image();
+				onpu1.src = "gazou/onpu.gif";
+					context.drawImage(onpu1,imgpos_x,array[1][imgpos_y]-25);
+					outsound(imgpos_x+20,array[1][imgpos_y]);						//音符画像の真ん中で音を出すためにxのみ+20
+				if(imgpos_x <= 130){
+					imgpos_x = array[0][0];
+				}
+				else{
+					setTimeout(start,moveSpeed);
+				}
 			}
 		}
 		
@@ -192,6 +198,14 @@ $(function () {
 			}
 			else	document.getElementById("piano_"+e).play();
 		}
+		
+		//音出力判断関数
+		function outsound(x,y){
+			if(x <= 150){
+				humen(x,y);
+			}
+		}		
+			
 		//クリック座標検出関数					
 		function adjustXY(e){
 			var rect = e.target.getBoundingClientRect();
