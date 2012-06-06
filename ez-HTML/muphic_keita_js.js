@@ -7,10 +7,16 @@ $(function () {
 	var mouseX;
 	var mouseY;
 	var k=0;
-	var array = new Array(25);
-	for(var i=0;i<2;i++){
+	var array = new Array(25);			//音符位置データ
+	for(var i=0;i<3;i++){
 		array[i]=[' ',' ',' '];
 	}
+	
+	var array2 = new Array(25);			//音符移動中データ
+	for(var i=0;i<3;i++){
+		array2[i]=[' ',' ',' '];
+	}
+	
 	var pf=0;	//ピアノフラグ
 	var start_f=0;	//スタートフラグ
 	var stop_f=0;	//ストップフラグ
@@ -34,6 +40,7 @@ $(function () {
 		for(var i=0;i<=1;i++){
 			for(var j=0;j<=24;j++){
 				array[i][j]=null;
+				array2[i][j]=null;
 			}
 		}
 	}
@@ -103,9 +110,11 @@ $(function () {
 			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
 				if(mouseY>=50 && mouseY<150){
 					imgpos_x = imgget_x();
-					start();
-//					alert(imgpos_x);
-//					alert(imgpos_y);		
+					for(var i=0;i<25;i++){
+						array2[0][i] = array[0][i];
+						array2[1][i] = array[1][i];
+					}
+					start();		
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
@@ -139,8 +148,8 @@ $(function () {
 		function copy(icon,e){
 			adjustXY(e);
 			if(mouseX>=150 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
-				array[0][k]=mouseX;
-				array[1][k]=mouseY;
+				array[0][k]=mouseX-20;
+				array[1][k]=mouseY-25;
 				k++;
 			}
 		}
@@ -151,8 +160,8 @@ $(function () {
 			imgpos_x = 0;
 			imgpos_y = 0;
 			while(a < 25){
-				if(imgpos_x < array[0][a]-25){
-					imgpos_x = array[0][a]-25;
+				if(imgpos_x < array[0][a]){
+					imgpos_x = array[0][a];
 					imgpos_y = a;
 					a++;
 				}
@@ -167,18 +176,25 @@ $(function () {
 		function start(){
 			if(imgpos_x != 0){
 				imgpos_x -= moveStep;
-				var onpu1 = new Image();
-				onpu1.src = "gazou/onpu.gif";
-					context.drawImage(onpu1,imgpos_x,array[1][imgpos_y]-25);
-					outsound(imgpos_x+20,array[1][imgpos_y]);						//音符画像の真ん中で音を出すためにxのみ+20
-				if(imgpos_x <= 130){
-					imgpos_x = array[0][0];
+				for(var i=0;i<25;i++){
+					array2[0][i] -= moveStep;
 				}
-				else{
+				for(var i=0;i<25;i++){
+					if(array2[0][i]>0){
+						var onpu1 = new Image();
+						onpu1.src = "gazou/onpu.gif";
+						context.drawImage(onpu1,array2[0][i],array2[1][i]);
+						if(array2[0][i] <= 130){
+							humen(array2[0][i]+20,array2[1][i]+25);					//音符画像の真ん中で音を出すためにxのみ+20
+						}
+					}
+				}
+				if(imgpos_x > 130){
 					setTimeout(start,moveSpeed);
 				}
 			}
 		}
+		
 		
 		//停止処理
 		function stop(){
@@ -197,14 +213,7 @@ $(function () {
 				draw2();
 			}
 			else	document.getElementById("piano_"+e).play();
-		}
-		
-		//音出力判断関数
-		function outsound(x,y){
-			if(x <= 150){
-				humen(x,y);
-			}
-		}		
+		}	
 			
 		//クリック座標検出関数					
 		function adjustXY(e){
@@ -239,7 +248,7 @@ $(function () {
 			if(array[0][i] != null){
 				var onpu = new Image();
 				onpu.src = "gazou/onpu.gif";
-				context.drawImage(onpu,array[0][i]-20,array[1][i]-25);
+				context.drawImage(onpu,array[0][i],array[1][i]);
 			}
 			else break;
 		}
