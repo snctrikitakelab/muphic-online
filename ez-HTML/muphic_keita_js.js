@@ -17,7 +17,9 @@ $(function () {
 		array2[i]=[' ',' ',' '];
 	}
 	
+	var sflag = null;
 	var pf=0;	//ピアノフラグ
+	var gf=0;
 	var start_f=0;	//スタートフラグ
 	var stop_f=0;	//ストップフラグ
 	var gomi_f=0;	//ゴミフラグ
@@ -37,7 +39,7 @@ $(function () {
 	
 	//配列初期化
 	function reset(){
-		for(var i=0;i<=1;i++){
+		for(var i=0;i<3;i++){
 			for(var j=0;j<=24;j++){
 				array[i][j]=null;
 				array2[i][j]=null;
@@ -88,7 +90,12 @@ $(function () {
 			context.fillText("イベント：マウスダウン", 5, 36);
 			draw();
 			if(pf==1){
-				copy("piano",e);
+				copy("piano_",e);
+				sflag = "piano_";
+			}
+			else if(gf==1){
+				copy("guitar_",e);
+				sflag = "guitar_";
 			}
 			check();
 			draw2();
@@ -96,7 +103,7 @@ $(function () {
 		
 		//クリック位置検出関数		
 		function check(){
-			humen(mouseX,mouseY);
+			humen(mouseX,mouseY,sflag);
 			if(mouseX>=50 && mouseX<=150){					//音ボタンクリック
 				if(mouseY>=550 && mouseY<650){
 					if(pf==0){
@@ -107,12 +114,25 @@ $(function () {
 					}
 				}
 			}
+			
+			if(mouseX>=150 && mouseX<=250){					//音ボタンクリック
+				if(mouseY>=550 && mouseY<650){
+					if(gf==0){
+						gf=1;
+					}
+					else{
+						gf=0;
+					}
+				}
+			}
+			
 			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
 				if(mouseY>=50 && mouseY<150){
 					imgpos_x = imgget_x();
 					for(var i=0;i<25;i++){
 						array2[0][i] = array[0][i];
 						array2[1][i] = array[1][i];
+						array2[2][i] = array[2][i];
 					}
 					start();		
 				}
@@ -130,14 +150,14 @@ $(function () {
 		}
 		
 		//譜面クリック位置検出関数
-		function humen(mouseX,mouseY){
-			if(pf==1){
+		function humen(mouseX,mouseY,icon){
+			if(pf==1 || gf==1){
 				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
-					var count=0;
+					var count=0;				
 					for(var i=500;i>=140;i-=40){
 						count++;
 						if(mouseY>=i-40 && mouseY<i){
-							output(count);
+							output(count,icon);
 						}
 					}
 				}
@@ -148,8 +168,24 @@ $(function () {
 		function copy(icon,e){
 			adjustXY(e);
 			if(mouseX>=150 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
+
+				for(var i=500;i>=140;i-=40){
+					if(mouseY>=i-40 && mouseY<i){
+						mouseY = i-20;
+						break;
+					}
+				}
+				
+				for(var i=150;i<=1300;i+=71.875){
+					if(mouseX>=i && mouseX<i+71.875){
+						mouseX = i+35.9375;
+						break;
+					}
+				}
+
 				array[0][k]=mouseX-20;
 				array[1][k]=mouseY-25;
+				array[2][k]=icon;
 				k++;
 			}
 		}
@@ -185,7 +221,7 @@ $(function () {
 						onpu1.src = "gazou/onpu.gif";
 						context.drawImage(onpu1,array2[0][i],array2[1][i]);
 						if(array2[0][i] <= 130){
-							humen(array2[0][i]+20,array2[1][i]+25);					//音符画像の真ん中で音を出すためにxのみ+20
+							humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);					//音符画像の真ん中で音を出すためにxのみ+20
 						}
 					}
 				}
@@ -194,7 +230,6 @@ $(function () {
 				}
 			}
 		}
-		
 		
 		//停止処理
 		function stop(){
@@ -207,12 +242,8 @@ $(function () {
 		}
 		
 		//音出力関数				
-		function output(e){
-			if(e>=9){
-				alert("音源ない(´・ω・｀)");
-				draw2();
-			}
-			else	document.getElementById("piano_"+e).play();
+		function output(e,icon){
+			document.getElementById(icon+e).play();
 		}	
 			
 		//クリック座標検出関数					
@@ -243,6 +274,15 @@ $(function () {
 			piano.src = "gazou/piano_1.gif";
 		}
 		context.drawImage(piano,50,550);
+		
+		var guitar = new Image();
+		if(gf==1){
+			guitar.src = "gazou/guitar_2.gif";
+		}
+		else{
+			guitar.src = "gazou/guitar_1.gif";
+		}
+		context.drawImage(guitar,150,550);
 		
 		for(var i=0;i<=24;i++){
 			if(array[0][i] != null){
