@@ -20,6 +20,7 @@ $(function () {
 	var sflag = null;
 	var pf=0;	//ピアノフラグ
 	var gf=0;
+	var tf=0;
 	var start_f=0;	//スタートフラグ
 	var stop_f=0;	//ストップフラグ
 	var gomi_f=0;	//ゴミフラグ
@@ -49,7 +50,7 @@ $(function () {
 	//譜面作成関数				
 	function draw(){
 		context.strokeStyle = "black";
-		context.fillStyle = "white";	
+		context.fillStyle = "#FFCCFF";	
 		context.beginPath();
 		context.moveTo(150,100);
 		context.lineTo(150,500);
@@ -59,13 +60,18 @@ $(function () {
 		context.fill();
 		context.stroke();
 
-		context.beginPath();
-		for(var i=1;i<=10;i++){	
+		context.fillStyle = "#CCFFFF";			
+		for(var i=1;i<=10;i+=2){	
 			var n = 40*i;
+			context.beginPath();
 			context.moveTo(150,100+n);
 			context.lineTo(1300,100+n);
+			context.lineTo(1300,140+n);
+			context.lineTo(150,140+n);
+			context.closePath();
+			context.fill();				
+			context.stroke();				
 		}
-		context.stroke();
 				
 		context.beginPath();
 		for(var i=1;i<=16;i++){	
@@ -97,6 +103,10 @@ $(function () {
 				copy("guitar_",e);
 				sflag = "guitar_";
 			}
+			else if(tf==1){
+				copy("tranpet_",e);
+				sflag = "tranpet_";
+			}			
 			check();
 			draw2();
 		}
@@ -108,6 +118,8 @@ $(function () {
 				if(mouseY>=550 && mouseY<650){
 					if(pf==0){
 						pf=1;
+						gf=0;
+						tf=0;
 					}
 					else{
 						pf=0;
@@ -119,9 +131,24 @@ $(function () {
 				if(mouseY>=550 && mouseY<650){
 					if(gf==0){
 						gf=1;
+						pf=0;
+						tf=0;
 					}
 					else{
 						gf=0;
+					}
+				}
+			}
+			
+			if(mouseX>=250 && mouseX<=350){					//音ボタンクリック
+				if(mouseY>=550 && mouseY<650){
+					if(tf==0){
+						tf=1;
+						pf=0;
+						gf=0;
+					}
+					else{
+						tf=0;
 					}
 				}
 			}
@@ -151,7 +178,7 @@ $(function () {
 		
 		//譜面クリック位置検出関数
 		function humen(mouseX,mouseY,icon){
-			if(pf==1 || gf==1){
+			if(pf==1 || gf==1 || tf==1){
 				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
 					var count=0;				
 					for(var i=500;i>=140;i-=40){
@@ -233,7 +260,8 @@ $(function () {
 		
 		//停止処理
 		function stop(){
-			alert("stop");
+			imgpos_x = 0;
+			start();
 		}
 		
 		//削除処理
@@ -283,7 +311,16 @@ $(function () {
 			guitar.src = "gazou/guitar_1.gif";
 		}
 		context.drawImage(guitar,150,550);
-		
+
+		var tranpet = new Image();
+		if(tf==1){
+			tranpet.src = "gazou/tranpet_2.gif";
+		}
+		else{
+			tranpet.src = "gazou/tranpet_1.gif";
+		}
+		context.drawImage(tranpet,250,550);
+				
 		for(var i=0;i<=24;i++){
 			if(array[0][i] != null){
 				var onpu = new Image();
