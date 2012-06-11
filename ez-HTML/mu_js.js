@@ -24,7 +24,7 @@ $(function () {
 	var onpu_f = new Array(25);		//‰¹•„ƒtƒ‰ƒO
 	
 	var moveStep = 1;
-	var moveSpeed = 20;
+	var moveSpeed = 15;
 	var imgpos_x = 0;
 	var imgpos_y = 0;
 	draw2();
@@ -122,7 +122,7 @@ $(function () {
 						array2[0][i] = array[0][i];
 						array2[1][i] = array[1][i];
 					}
-					start();		
+					start();
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//’âŽ~ƒ{ƒ^ƒ“ƒNƒŠƒbƒN
@@ -200,9 +200,8 @@ $(function () {
 		}
 		
 		//‰¹•„‰æ‘œŒÂ”’²¸ŠÖ”
-		function getlast(arraylast){
-			var i;	
-			for(i=0;i<25;i++){
+		function getlast(arraylast){	
+			for(var i=0;i<25;i++){
 				if(array2[1][i] != null){
 					arraylast++;
 				}
@@ -220,31 +219,35 @@ $(function () {
 					array2[0][i] -= moveStep;
 				}
 				for(var i=0;i<25;i++){
-					if(onpu_f[i] === 0){
-						if(array2[0][i]>0){
-							if(array2[0][i] <= 130){
-								humen(array2[0][i]+20,array2[1][i]+25);					//‰¹•„‰æ‘œ‚Ì^‚ñ’†‚Å‰¹‚ðo‚·‚½‚ß‚Éx‚Ì‚Ý+20
-								onpu_f[i] = 1;
-							}
-							outonpu(array2[0][i],array2[1][i]);
-							if((i+1) >= arraylast){			//‰¹•„‰æ‘œ‚ð•`ŽÊ‚µI‚í‚Á‚½‚ç(‚±‚±‚É‚Í—ˆ‚È‚¢)
-								outhaikei();
+					if(array2[0][i]>0){
+						if(array2[0][i] <= 130){
+							humen(array2[0][i]+20,array2[1][i]+25);			//‰¹•„‰æ‘œ‚Ì^‚ñ’†‚Å‰¹‚ðo‚·‚½‚ß‚Éx‚Ì‚Ý+20
+							onpu_f[i] = 1;				//‰¹‚ª–Â‚èŽŸ‘æ‚»‚Ì‰¹•„‰æ‘œ‚Í•`ŽÊ‚Ì•K—v‚ª‚È‚­‚È‚é
+						}
+						outhaikei();					//”wŒi‚Ì•`ŽÊ
+						for(var j=0;j<=arraylast;j++){
+							if(onpu_f[j] == 0){			//•`ŽÊ‚ª•K—v‚È‰¹•„‰æ‘œ‚¾‚¯
+								outonpu(array2[0][j],array2[1][j]);			//‰¹•„‰æ‘œ‚Ì•`ŽÊ
 							}
 						}
-					}
-					if(onpu_f[i] === 1){
-						outhaikei();			//”wŒi‚Ì‚Ý‚ðã‘‚«‚·‚é‚±‚Æ‚Å‰¹•„‚ðÁ‚·
 					}
 				}
 				if(imgpos_x > 130){
 					setTimeout(start,moveSpeed);
+				}
+				if(imgpos_x <= 130){
+					stop();
 				}
 			}
 		}
 		
 		//’âŽ~ˆ—
 		function stop(){
-			alert("stop");
+			for(var i=0;i<=24;i++){
+				onpu_f[i]=0;
+			}
+			imgpos_x = 0;
+			remember();
 		}
 		
 		//íœˆ—
@@ -293,7 +296,7 @@ $(function () {
 	
 	//‰¹•„‰æ‘œ‰ŠúˆÊ’u‹L‰¯ŠÖ”
 	function remember(){
-		for(var i=0;i<=24;i++){
+		for(var i=0;i<25;i++){
 			if(array[0][i] != null){
 				var onpu = new Image();
 				onpu.src = "gazou/onpu.gif";
