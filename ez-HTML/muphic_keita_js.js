@@ -26,7 +26,7 @@ $(function () {
 	var gomi_f=0;	//ゴミフラグ
 	
 	var moveStep = 1;
-	var moveSpeed = 20;
+	var moveSpeed = 15;
 	var imgpos_x = 0;
 	var imgpos_y = 0;
 	draw2();
@@ -161,7 +161,7 @@ $(function () {
 						array2[1][i] = array[1][i];
 						array2[2][i] = array[2][i];
 					}
-					start();		
+					start();	
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
@@ -189,6 +189,7 @@ $(function () {
 					}
 				}
 			}
+			
 		}
 		
 		//画像複製関数
@@ -285,13 +286,13 @@ $(function () {
 	//画像出力関数		
 	function draw2(){
 		var start = new Image();
-		start.src = "gazou/start_button.png";
+		start.src = "gazou/start_button.gif";
 		context.drawImage(start,25,50);
 		var stop = new Image();
-		stop.src = "gazou/stop_button.png";
+		stop.src = "gazou/stop_button.gif";
 		context.drawImage(stop,25,150);
 		var gomi = new Image();
-		gomi.src = "gazou/gomibako.jpg";
+		gomi.src = "gazou/keshigomu_1.gif";
 		context.drawImage(gomi,25,250);
 		
 		var piano = new Image();
