@@ -24,6 +24,7 @@ $(function () {
 	var start_f=0;	//スタートフラグ
 	var stop_f=0;	//ストップフラグ
 	var gomi_f=0;	//ゴミフラグ
+	var onpu_f = new Array(25);		//音符フラグ
 	
 	var moveStep = 1;
 	var moveSpeed = 15;
@@ -35,6 +36,7 @@ $(function () {
 		reset();
 		draw();
 		draw2();
+		remember();
 		draw1();
 	}	
 	
@@ -46,7 +48,11 @@ $(function () {
 				array2[i][j]=null;
 			}
 		}
+		for(var i=0;i<=24;i++){
+			onpu_f[i]=0;
+		}
 	}
+	
 	//譜面作成関数				
 	function draw(){
 		context.strokeStyle = "black";
@@ -109,6 +115,7 @@ $(function () {
 			}			
 			check();
 			draw2();
+			remember();
 		}
 		
 		//クリック位置検出関数		
@@ -196,7 +203,6 @@ $(function () {
 		function copy(icon,e){
 			adjustXY(e);
 			if(mouseX>=150 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
-
 				for(var i=500;i>=140;i-=40){
 					if(mouseY>=i-40 && mouseY<i){
 						mouseY = i-20;
@@ -234,10 +240,42 @@ $(function () {
 				}	
 			}
 			return imgpos_x;
-		}	
+		}
+		
+		//背景出力関数
+		function outhaikei(){
+			context.clearRect(0,0,cW,cH);
+			context.globalAlpha = 1;
+			context.fillStyle = "#666666";
+			context.fillText("X座標：" + mouseX, 5, 12);
+			context.fillText("Y座標：" + mouseY, 5, 24);
+			context.fillText("イベント：マウスダウン", 5, 36);
+			draw();
+			draw2();
+		}
+		
+		//音符画像出力関数
+		function outonpu(x,y){
+			var onpu1 = new Image();
+			onpu1.src = "gazou/onpu.gif";
+			context.drawImage(onpu1,x,y);
+		}
+		
+		//音符画像個数調査関数
+		function getlast(arraylast){	
+			for(var i=0;i<25;i++){
+				if(array2[1][i] != null){
+					arraylast++;
+				}
+			}
+			return arraylast;
+		}		
+		
 		
 		//再生処理
 		function start(){
+			var arraylast=0;
+			arraylast = getlast(arraylast);
 			if(imgpos_x != 0){
 				imgpos_x -= moveStep;
 				for(var i=0;i<25;i++){
@@ -245,24 +283,34 @@ $(function () {
 				}
 				for(var i=0;i<25;i++){
 					if(array2[0][i]>0){
-						var onpu1 = new Image();
-						onpu1.src = "gazou/onpu.gif";
-						context.drawImage(onpu1,array2[0][i],array2[1][i]);
 						if(array2[0][i] <= 130){
-							humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);					//音符画像の真ん中で音を出すためにxのみ+20
+							humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);	
+							onpu_f[i] = 1;				//音が鳴り次第その音符画像は描写の必要がなくなる
 						}
+						outhaikei();					//背景の描写
+						for(var j=0;j<arraylast;j++){
+							if(onpu_f[j] == 0){			//描写が必要な音符画像だけ
+								outonpu(array2[0][j],array2[1][j]);			//音符画像の描写
+							}
+						}						
 					}
 				}
 				if(imgpos_x > 130){
 					setTimeout(start,moveSpeed);
+				}
+				if(imgpos_x <= 130){
+					stop();
 				}
 			}
 		}
 		
 		//停止処理
 		function stop(){
+			for(var i=0;i<=24;i++){
+				onpu_f[i]=0;
+			}
 			imgpos_x = 0;
-			start();
+			remember();
 		}
 		
 		//削除処理
@@ -321,7 +369,10 @@ $(function () {
 			tranpet.src = "gazou/tranpet_1.gif";
 		}
 		context.drawImage(tranpet,250,550);
-				
+	}
+	
+	//音符画像初期位置記憶関数
+	function remember(){				
 		for(var i=0;i<=24;i++){
 			if(array[0][i] != null){
 				var onpu = new Image();
