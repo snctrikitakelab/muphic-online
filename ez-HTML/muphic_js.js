@@ -8,26 +8,25 @@ $(function () {
 	var mouseY;
 	var k=0;
 	var array = new Array(25);			//音符位置データ
+	var array2 = new Array(25);
 	for(var i=0;i<3;i++){
 		array[i]=[' ',' ',' '];
-	}
-	
-	var array2 = new Array(25);			//音符移動中データ
-	for(var i=0;i<3;i++){
 		array2[i]=[' ',' ',' '];
 	}
-	
+
 	var sflag = null;
 	var pf=0;	//ピアノフラグ
 	var gf=0;
 	var tf=0;
+	var vf=0;
 	var start_f=0;	//スタートフラグ
 	var stop_f=0;	//ストップフラグ
 	var gomi_f=0;	//ゴミフラグ
 	var onpu_f = new Array(25);		//音符フラグ
+	var arraylast=0;	
 	
-	var moveStep = 1;
-	var moveSpeed = 15;
+	var moveStep = 2;
+	var moveSpeed = 5;
 	var imgpos_x = 0;
 	var imgpos_y = 0;
 	draw2();
@@ -38,7 +37,7 @@ $(function () {
 		draw2();
 		remember();
 		draw1();
-	}	
+	}
 	
 	//配列初期化
 	function reset(){
@@ -46,10 +45,8 @@ $(function () {
 			for(var j=0;j<=24;j++){
 				array[i][j]=null;
 				array2[i][j]=null;
+				onpu_f[j]=0;
 			}
-		}
-		for(var i=0;i<=24;i++){
-			onpu_f[i]=0;
 		}
 	}
 	
@@ -86,7 +83,8 @@ $(function () {
 			context.lineTo(150+n,500);
 		}
 		context.stroke();
-	}	
+	}
+		
 	//ボタン関連関数		
 	function draw1(){
 		canvas.onmousedown = mouseDownListner;
@@ -97,9 +95,6 @@ $(function () {
 			adjustXY(e);
 			context.globalAlpha = 1;
 			context.fillStyle = "#666666";
-			context.fillText("X座標：" + mouseX, 5, 12);
-			context.fillText("Y座標：" + mouseY, 5, 24);
-			context.fillText("イベント：マウスダウン", 5, 36);
 			draw();
 			if(pf==1){
 				copy("piano_",e);
@@ -112,7 +107,11 @@ $(function () {
 			else if(tf==1){
 				copy("tranpet_",e);
 				sflag = "tranpet_";
-			}			
+			}
+			else if(vf==1){
+				copy("violin_",e);
+				sflag = "violin_";
+			}	
 			check();
 			draw2();
 			remember();
@@ -127,6 +126,7 @@ $(function () {
 						pf=1;
 						gf=0;
 						tf=0;
+						vf=0;
 					}
 					else{
 						pf=0;
@@ -140,6 +140,7 @@ $(function () {
 						gf=1;
 						pf=0;
 						tf=0;
+						vf=0;
 					}
 					else{
 						gf=0;
@@ -153,9 +154,24 @@ $(function () {
 						tf=1;
 						pf=0;
 						gf=0;
+						vf=0;
 					}
 					else{
 						tf=0;
+					}
+				}
+			}
+			
+			if(mouseX>=350 && mouseX<=450){					//音ボタンクリック
+				if(mouseY>=550 && mouseY<650){
+					if(vf==0){
+						vf=1;
+						pf=0;
+						tf=0;
+						gf=0;
+					}
+					else{
+						vf=0;
 					}
 				}
 			}
@@ -168,6 +184,7 @@ $(function () {
 						array2[1][i] = array[1][i];
 						array2[2][i] = array[2][i];
 					}
+					arraylast = getlast(arraylast);
 					start();	
 				}
 			}
@@ -185,7 +202,7 @@ $(function () {
 		
 		//譜面クリック位置検出関数
 		function humen(mouseX,mouseY,icon){
-			if(pf==1 || gf==1 || tf==1){
+			if(pf==1 || gf==1 || tf==1 || vf==1){
 				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
 					var count=0;				
 					for(var i=500;i>=140;i-=40){
@@ -216,7 +233,6 @@ $(function () {
 						break;
 					}
 				}
-
 				array[0][k]=mouseX-20;
 				array[1][k]=mouseY-25;
 				array[2][k]=icon;
@@ -247,9 +263,6 @@ $(function () {
 			context.clearRect(0,0,cW,cH);
 			context.globalAlpha = 1;
 			context.fillStyle = "#666666";
-			context.fillText("X座標：" + mouseX, 5, 12);
-			context.fillText("Y座標：" + mouseY, 5, 24);
-			context.fillText("イベント：マウスダウン", 5, 36);
 			draw();
 			draw2();
 		}
@@ -274,15 +287,11 @@ $(function () {
 		
 		//再生処理
 		function start(){
-			var arraylast=0;
-			arraylast = getlast(arraylast);
 			if(imgpos_x != 0){
 				imgpos_x -= moveStep;
 				for(var i=0;i<25;i++){
 					array2[0][i] -= moveStep;
-				}
-				for(var i=0;i<25;i++){
-					if(array2[0][i]>0){
+					if(array2[0][i]>125){
 						if(array2[0][i] <= 130){
 							humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);	
 							onpu_f[i] = 1;				//音が鳴り次第その音符画像は描写の必要がなくなる
@@ -369,6 +378,15 @@ $(function () {
 			tranpet.src = "gazou/tranpet_1.gif";
 		}
 		context.drawImage(tranpet,250,550);
+		
+		var violin = new Image();
+		if(vf==1){
+			violin.src = "gazou/violin_2.gif";
+		}
+		else{
+			violin.src = "gazou/violin_1.gif";
+		}
+		context.drawImage(violin,350,550);
 	}
 	
 	//音符画像初期位置記憶関数
