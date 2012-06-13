@@ -168,7 +168,7 @@ $(function () {
 						array2[1][i] = array[1][i];
 						array2[2][i] = array[2][i];
 					}
-					start();	
+					start();					
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//’â~ƒ{ƒ^ƒ“ƒNƒŠƒbƒN
@@ -278,19 +278,20 @@ $(function () {
 			arraylast = getlast(arraylast);
 			if(imgpos_x != 0){
 				imgpos_x -= moveStep;
+//				for(var i=0;i<25;i++){
+//					array2[0][i] -= moveStep;
+//				}
 				for(var i=0;i<25;i++){
 					array2[0][i] -= moveStep;
-				}
-				for(var i=0;i<25;i++){
 					if(array2[0][i]>0){
 						if(array2[0][i] <= 130){
 							humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);	
-							onpu_f[i] = 1;				//‰¹‚ª–Â‚èŸ‘æ‚»‚Ì‰¹•„‰æ‘œ‚Í•`Ê‚Ì•K—v‚ª‚È‚­‚È‚é
+							onpu_f[i] = 1;
 						}
-						outhaikei();					//”wŒi‚Ì•`Ê
+						outhaikei();
 						for(var j=0;j<arraylast;j++){
-							if(onpu_f[j] == 0){			//•`Ê‚ª•K—v‚È‰¹•„‰æ‘œ‚¾‚¯
-								outonpu(array2[0][j],array2[1][j]);			//‰¹•„‰æ‘œ‚Ì•`Ê
+							if(onpu_f[j] == 0){	
+								outonpu(array2[0][j],array2[1][j]);	
 							}
 						}						
 					}
