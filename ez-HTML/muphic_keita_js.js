@@ -184,16 +184,18 @@ $(function () {
 			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
 				if(mouseY>=50 && mouseY<150){
 					imgpos_x = imgget_x();
-					for(var i=0;i<25;i++){
-						array2[0][i] = array[0][i];
-						array2[1][i] = array[1][i];
-						array2[2][i] = array[2][i];
-						array2[3][i] = array[3][i];
+					if(imgpos_x != 0){
+						for(var i=0;i<25;i++){
+							array2[0][i] = array[0][i];
+							array2[1][i] = array[1][i];
+							array2[2][i] = array[2][i];
+							array2[3][i] = array[3][i];
+						}
+						arraylast = getlast();
+						start_f = 1;
+						eraser_f = 0;
+						start();
 					}
-					arraylast = getlast();
-					start_f = 1;
-					eraser_f = 0;
-					start();	
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
@@ -201,6 +203,7 @@ $(function () {
 					stop();
 				}
 			}
+			
 			if(mouseX>=25 && mouseX<=125){					//消しゴムボタンクリック
 				if(mouseY>=250 && mouseY<350){
 					stop();
@@ -278,10 +281,15 @@ $(function () {
 			imgpos_x = 0;
 			imgpos_y = 0;
 			while(a < 25){
-				if(imgpos_x < array[0][a]){
-					imgpos_x = array[0][a];
-					imgpos_y = a;
-					a++;
+				if(array[3][a] == 1){
+					if(imgpos_x < array[0][a]){
+						imgpos_x = array[0][a];
+						imgpos_y = a;
+						a++;
+					}
+					else{
+						a++;
+					}
 				}
 				else{
 					a++;
@@ -340,7 +348,7 @@ $(function () {
 					}
 				}
 				if(imgpos_x > 130){
-					setTimeout(start,moveSpeed);
+						setTimeout(start,moveSpeed);
 				}
 				if(imgpos_x <= 130){
 					stop();
