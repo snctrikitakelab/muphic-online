@@ -1,7 +1,6 @@
 $(function () {
 	var canvas =document.getElementById("canvas1");		
-	var context = canvas.getContext("2d");
-	context.save();		
+	var context = canvas.getContext("2d");	
 	var cW = 1300;
 	var cH = 650;
 	var mouseX;
@@ -42,12 +41,10 @@ $(function () {
 		for(var i=0;i<4;i++){
 			for(var j=0;j<=24;j++){
 				array[i][j]=null;
+				array[3][j]=0;
 				array2[i][j]=null;
+				array2[3][j]=0;
 			}
-		}
-		for(var i=0;i<=24;i++){
-			array[3][i]=0;
-			array2[3][i]=0;
 		}			
 	}
 	
@@ -121,14 +118,11 @@ $(function () {
 		//クリック位置検出関数		
 		function check(){
 			humen(mouseX,mouseY,sflag);
-			if(mouseX>=50 && mouseX<=150){					//音ボタンクリック
+			if(mouseX>=150 && mouseX<=250){					//音ボタンクリック
 				if(mouseY>=550 && mouseY<650){
 					if(pf==0){
 						pf=1;
-						gf=0;
-						tf=0;
-						vf=0;
-						eraser_f=0;
+						gf=tf=vf=eraser_f=0;
 					}
 					else{
 						pf=0;
@@ -136,14 +130,11 @@ $(function () {
 				}
 			}
 			
-			if(mouseX>=150 && mouseX<=250){					//音ボタンクリック
+			if(mouseX>=300 && mouseX<=400){					//音ボタンクリック
 				if(mouseY>=550 && mouseY<650){
 					if(gf==0){
 						gf=1;
-						pf=0;
-						tf=0;
-						vf=0;
-						eraser_f=0;
+						pf=tf=vf=eraser_f=0;
 					}
 					else{
 						gf=0;
@@ -151,14 +142,11 @@ $(function () {
 				}
 			}
 			
-			if(mouseX>=250 && mouseX<=350){					//音ボタンクリック
+			if(mouseX>=450 && mouseX<=550){					//音ボタンクリック
 				if(mouseY>=550 && mouseY<650){
 					if(tf==0){
 						tf=1;
-						pf=0;
-						gf=0;
-						vf=0;
-						eraser_f=0;
+						pf=gf=vf=eraser_f=0;
 					}
 					else{
 						tf=0;
@@ -166,14 +154,11 @@ $(function () {
 				}
 			}
 			
-			if(mouseX>=350 && mouseX<=450){					//音ボタンクリック
+			if(mouseX>=600 && mouseX<=700){					//音ボタンクリック
 				if(mouseY>=550 && mouseY<650){
 					if(vf==0){
 						vf=1;
-						pf=0;
-						tf=0;
-						gf=0;
-						eraser_f=0;
+						pf=tf=gf=eraser_f=0;
 					}
 					else{
 						vf=0;
@@ -182,7 +167,7 @@ $(function () {
 			}
 			
 			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
-				if(mouseY>=50 && mouseY<150){
+				if(mouseY>=100 && mouseY<200){
 					imgpos_x = imgget_x();
 					if(imgpos_x != 0){
 						for(var i=0;i<25;i++){
@@ -199,19 +184,16 @@ $(function () {
 				}
 			}
 			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
-				if(mouseY>=150 && mouseY<250){
+				if(mouseY>=200 && mouseY<300){
 					stop();
 				}
 			}
 			
 			if(mouseX>=25 && mouseX<=125){					//消しゴムボタンクリック
-				if(mouseY>=250 && mouseY<350){
+				if(mouseY>=300 && mouseY<400){
 					stop();
 					if(eraser_f==0){
-						vf=0;
-						pf=0;
-						tf=0;
-						gf=0;
+						vf=pf=tf=gf=0;
 						eraser_f=1;
 						humen(mouseX,mouseY,eraser_f);
 					}
@@ -353,6 +335,7 @@ $(function () {
 				if(imgpos_x <= 130){
 					stop();
 					start_f=0;
+					draw2();
 				}
 			}
 		}
@@ -392,12 +375,16 @@ $(function () {
 	
 	//画像出力関数		
 	function draw2(){
+		
+		var muphic = new Image();
+		muphic.src = "gazou/muphic1.gif";
+		context.drawImage(muphic,300,0);
 		var start = new Image();
 		start.src = "gazou/start_button.gif";
-		context.drawImage(start,25,50);
+		context.drawImage(start,25,100);
 		var stop = new Image();
 		stop.src = "gazou/stop_button.gif";
-		context.drawImage(stop,25,150);
+		context.drawImage(stop,25,200);
 		
 		var eraser = new Image();
 		if(eraser_f==1){
@@ -406,7 +393,7 @@ $(function () {
 		else{
 			eraser.src = "gazou/keshigomu_1.gif";
 		}
-		context.drawImage(eraser,25,250);
+		context.drawImage(eraser,25,300);
 		
 		var piano = new Image();
 		if(pf==1){
@@ -415,7 +402,7 @@ $(function () {
 		else{
 			piano.src = "gazou/piano_1.gif";
 		}
-		context.drawImage(piano,50,550);
+		context.drawImage(piano,150,550);
 		
 		var guitar = new Image();
 		if(gf==1){
@@ -424,7 +411,7 @@ $(function () {
 		else{
 			guitar.src = "gazou/guitar_1.gif";
 		}
-		context.drawImage(guitar,150,550);
+		context.drawImage(guitar,300,550);
 
 		var tranpet = new Image();
 		if(tf==1){
@@ -433,7 +420,7 @@ $(function () {
 		else{
 			tranpet.src = "gazou/tranpet_1.gif";
 		}
-		context.drawImage(tranpet,250,550);
+		context.drawImage(tranpet,450,550);
 		
 		var violin = new Image();
 		if(vf==1){
@@ -442,7 +429,7 @@ $(function () {
 		else{
 			violin.src = "gazou/violin_1.gif";
 		}
-		context.drawImage(violin,350,550);
+		context.drawImage(violin,600,550);
 	}
 	
 	//音符画像初期位置記憶関数

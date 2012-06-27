@@ -1,5 +1,4 @@
-$(function () {
-
+$(function () {	
 	//ïàñ çÏê¨ä÷êî				
 	function draw(){
 		context.strokeStyle = "black";
@@ -33,6 +32,10 @@ $(function () {
 			context.lineTo(150+n,500);
 		}
 		context.stroke();
+		
+		var w = screen.width;
+		var h = screen.height;
+		alert(w+","+h);
 	}
 	
 });
