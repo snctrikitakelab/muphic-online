@@ -13,6 +13,11 @@ $(function () {
 		array2[i]=[' ',' ',' ',' ',' '];
 	}
 	
+	var beat_x = new Array(32);
+	for(var i=0;i<32;i++){
+		beat_x[i] = 150 + 35.9375*i - 20;
+	}
+	
 	var sflag = null;
 	var pf=0;	//ピアノフラグ
 	var gf=0;	
@@ -24,13 +29,13 @@ $(function () {
 	var onpu_f = new Array(25);		//音符フラグ
 	
 	var bpm = 500;					//Beats Per Minutes:拍
-	var fpb = 10;					//Flame Per Bpm:Bpmごとに描写するフレーム数
+	var fpb = 12;					//Flame Per Bpm:Bpmごとに描写するフレーム数
 	//var bpm_a = 1/(35.9375/bpm);	//関数animation用ループ制御秒数
 	var loop_s = 0;					//関数soundループ回数カウント変数
 	var loop_a = 0;					//関数animationループ回数カウント変数
 	var arraylast = 0;
 
-	var moveStep = 30/fpb;			
+	var moveStep = 36/fpb;			
 	var moveSpeed = bpm/fpb;		//アニメーションさせるべき速さ
 	var imgpos_x = 0;
 	var imgpos_y = 0;
@@ -223,7 +228,6 @@ $(function () {
 					}
 				}
 			}
-			
 		}
 		
 		//画像複製関数
@@ -314,18 +318,24 @@ $(function () {
 		
 		//アニメーション関数
 		function animation(){
-			//for(var i=0;i<fpb;i++){
-				outhaikei();
-				for(var j=0;j<arraylast;j++){
-					array2[0][j] -= moveStep;
-					if(onpu_f[j] == 0){								//描写が必要な音符画像だけ
-						outonpu(array2[0][j],array2[1][j]);			//音符画像の描写
-					}
+			outhaikei();
+			for(var j=0;j<arraylast;j++){
+				//array2[0][j] -= moveStep;
+				//alert(array2[4][j])
+				var x = beat_x[array2[4][j]]-(loop_a*moveStep);
+				if(onpu_f[j] == 0){								//描写が必要な音符画像だけ
+					outonpu(x,array2[1][j]);					//音符画像の描写	
 				}
-			//}
+			}
 			if(loop_a < fpb){
 				loop_a++;
+				loop_s++;
 				setTimeout(animation,moveSpeed-5);
+			}
+			else{
+				for(var i=0;i<25;i++){
+					array2[4][i]--;
+				}
 			}
 		}
 		
@@ -333,25 +343,20 @@ $(function () {
 		function sound(){
 			//imgpos_x -= moveStep;
 			loop_a = 0;
-			setTimeout(animation,0);			//0[ms]でアニメーション関数を呼び出す
+				setTimeout(animation,0);			//0[ms]でアニメーション関数を呼び出す
 			for(var i=0;i<25;i++){
-				if(array2[4][i] == 0){			//音を鳴らすべき時間が来たら
+				if(array2[4][i] == 0){				//音を鳴らすべき時間が来たら
 					humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);		//音を鳴らす
 					onpu_f[i] = 1;					//鳴らした音符は描写する必要がない
 				}	
 			}
 			if(array2[4][arraylast-1] != 0){
-				for(var i=0;i<25;i++){
-					array2[4][i]--;
-				}
-				//loop_s++;
 				setTimeout(sound,bpm);
 			}
 		}
 		
 		//再生処理
 		function start(){
-			loop_s = 1;
 			arraylast=0;
 			arraylast = getlast();
 			if(imgpos_x != 0){
