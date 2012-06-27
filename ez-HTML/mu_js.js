@@ -62,8 +62,8 @@ $(function () {
 		context.strokeStyle = "black";
 		context.fillStyle = "#FFCCFF";	
 		context.beginPath();
-		context.moveTo(100,100);
-		context.lineTo(100,500);
+		context.moveTo(150,100);
+		context.lineTo(150,500);
 		context.lineTo(1300,500);
 		context.lineTo(1300,100);
 		context.closePath();
@@ -74,20 +74,20 @@ $(function () {
 		for(var i=1;i<=10;i+=2){	
 			var n = 40*i;
 			context.beginPath();
-			context.moveTo(100,100+n);
+			context.moveTo(150,100+n);
 			context.lineTo(1300,100+n);
 			context.lineTo(1300,140+n);
-			context.lineTo(100,140+n);
+			context.lineTo(150,140+n);
 			context.closePath();
 			context.fill();				
 			context.stroke();				
 		}
 				
 		context.beginPath();
-		for(var i=1;i<=20;i++){	
-			var n = 60*i;
-			context.moveTo(100+n,100);
-			context.lineTo(100+n,500);
+		for(var i=1;i<=16;i++){	
+			var n = 71.875*i;
+			context.moveTo(150+n,100);
+			context.lineTo(150+n,500);
 		}
 		context.stroke();
 	}
@@ -186,7 +186,7 @@ $(function () {
 				}
 			}
 			
-			if(mouseX>=0 && mouseX<=100){					//再生ボタンクリック
+			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
 				if(mouseY>=50 && mouseY<150){
 					imgpos_x = imgget_x();
 					for(var i=0;i<25;i++){
@@ -198,12 +198,12 @@ $(function () {
 					start();	
 				}
 			}
-			if(mouseX>=0 && mouseX<=100){					//停止ボタンクリック
+			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
 				if(mouseY>=150 && mouseY<250){
 					stop();
 				}
 			}
-			if(mouseX>=0 && mouseX<=100){					//ゴミ箱ボタンクリック
+			if(mouseX>=25 && mouseX<=125){					//ゴミ箱ボタンクリック
 				if(mouseY>=250 && mouseY<350){
 					gomi();
 				}
@@ -213,7 +213,7 @@ $(function () {
 		//譜面クリック位置検出関数
 		function humen(mouseX,mouseY,icon){
 			if(pf==1 || gf==1 || tf==1 || vf==1){
-				if(mouseX>=100 && mouseX<=1300){			//譜面クリック
+				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
 					var count=0;				
 					for(var i=500;i>=140;i-=40){
 						count++;
@@ -229,7 +229,7 @@ $(function () {
 		//画像複製関数
 		function copy(icon,e){
 			adjustXY(e);
-			if(mouseX>=100 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
+			if(mouseX>=150 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
 				for(var i=500;i>=140;i-=40){
 					if(mouseY>=i-40 && mouseY<i){
 						mouseY = i-20;
@@ -237,9 +237,9 @@ $(function () {
 					}
 				}
 				
-				for(var i=100;i<=1300;i+=60){
-					if(mouseX>=i && mouseX<i+60){
-						mouseX = i+30;
+				for(var i=150;i<=1300;i+=71.875){
+					if(mouseX>=i && mouseX<i+71.875){
+						mouseX = i+35.9375;
 						break;
 					}
 				}
@@ -302,8 +302,8 @@ $(function () {
 		//拍数調査関数
 		function beats(x){
 			var beat = 0;
-			for(var i=100;i<=1300;i+=30){
-				if(x>=i && x<i+30){
+			for(var i=150;i<=1300;i+=35.9375){
+				if(x>=i && x<i+35.9375){
 					beat++;
 					break;
 				}
@@ -333,23 +333,25 @@ $(function () {
 		function sound(){
 			//imgpos_x -= moveStep;
 			loop_a = 0;
-			
+			setTimeout(animation,0);			//0[ms]でアニメーション関数を呼び出す
 			for(var i=0;i<25;i++){
-				if(array2[4][i] == loop_s){			//音を鳴らすべき時間が来たら
+				if(array2[4][i] == 0){			//音を鳴らすべき時間が来たら
 					humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);		//音を鳴らす
 					onpu_f[i] = 1;					//鳴らした音符は描写する必要がない
 				}	
 			}
-			setTimeout(animation,0);			//0[ms]でアニメーション関数を呼び出す
-			if(imgpos_x > 80){
-				loop_s++;
+			if(array2[4][arraylast-1] != 0){
+				for(var i=0;i<25;i++){
+					array2[4][i]--;
+				}
+				//loop_s++;
 				setTimeout(sound,bpm);
 			}
 		}
 		
 		//再生処理
 		function start(){
-			loop_s = 0;
+			loop_s = 1;
 			arraylast=0;
 			arraylast = getlast();
 			if(imgpos_x != 0){
@@ -393,13 +395,13 @@ $(function () {
 	function draw2(){
 		var start = new Image();
 		start.src = "gazou/start_button.gif";
-		context.drawImage(start,0,50);
+		context.drawImage(start,25,50);
 		var stop = new Image();
 		stop.src = "gazou/stop_button.gif";
-		context.drawImage(stop,0,150);
+		context.drawImage(stop,25,150);
 		var gomi = new Image();
 		gomi.src = "gazou/keshigomu_1.gif";
-		context.drawImage(gomi,0,250);
+		context.drawImage(gomi,25,250);
 		
 		var piano = new Image();
 		if(pf==1){
