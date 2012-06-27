@@ -1,25 +1,21 @@
 $(function () {
 	var canvas =document.getElementById("canvas1");		
 	var context = canvas.getContext("2d");
-	context.save();		
 	var cW = 1300;
 	var cH = 650;
 	var mouseX;
 	var mouseY;
 	var k=0;
 	var array = new Array(25);			//音符位置データ
-	for(var i=0;i<3;i++){
-		array[i]=[' ',' ',' '];
-	}
-	
 	var array2 = new Array(25);			//音符移動中データ
-	for(var i=0;i<3;i++){
-		array2[i]=[' ',' ',' '];
+	for(var i=0;i<5;i++){
+		array[i]=[' ',' ',' ',' ',' '];
+		array2[i]=[' ',' ',' ',' ',' '];
 	}
 	
 	var sflag = null;
 	var pf=0;	//ピアノフラグ
-	var gf=0;
+	var gf=0;	
 	var tf=0;
 	var vf=0;
 	var start_f=0;	//スタートフラグ
@@ -27,8 +23,15 @@ $(function () {
 	var gomi_f=0;	//ゴミフラグ
 	var onpu_f = new Array(25);		//音符フラグ
 	
-	var moveStep = 1;
-	var moveSpeed = 10;
+	var bpm = 500;					//Beats Per Minutes:拍
+	var fpb = 10;					//Flame Per Bpm:Bpmごとに描写するフレーム数
+	//var bpm_a = 1/(35.9375/bpm);	//関数animation用ループ制御秒数
+	var loop_s = 0;					//関数soundループ回数カウント変数
+	var loop_a = 0;					//関数animationループ回数カウント変数
+	var arraylast = 0;
+
+	var moveStep = 30/fpb;			
+	var moveSpeed = bpm/fpb;		//アニメーションさせるべき速さ
 	var imgpos_x = 0;
 	var imgpos_y = 0;
 	draw2();
@@ -43,7 +46,7 @@ $(function () {
 	
 	//配列初期化
 	function reset(){
-		for(var i=0;i<3;i++){
+		for(var i=0;i<5;i++){
 			for(var j=0;j<=24;j++){
 				array[i][j]=null;
 				array2[i][j]=null;
@@ -59,8 +62,8 @@ $(function () {
 		context.strokeStyle = "black";
 		context.fillStyle = "#FFCCFF";	
 		context.beginPath();
-		context.moveTo(150,100);
-		context.lineTo(150,500);
+		context.moveTo(100,100);
+		context.lineTo(100,500);
 		context.lineTo(1300,500);
 		context.lineTo(1300,100);
 		context.closePath();
@@ -71,20 +74,20 @@ $(function () {
 		for(var i=1;i<=10;i+=2){	
 			var n = 40*i;
 			context.beginPath();
-			context.moveTo(150,100+n);
+			context.moveTo(100,100+n);
 			context.lineTo(1300,100+n);
 			context.lineTo(1300,140+n);
-			context.lineTo(150,140+n);
+			context.lineTo(100,140+n);
 			context.closePath();
 			context.fill();				
 			context.stroke();				
 		}
 				
 		context.beginPath();
-		for(var i=1;i<=16;i++){	
-			var n = 71.875*i;
-			context.moveTo(150+n,100);
-			context.lineTo(150+n,500);
+		for(var i=1;i<=20;i++){	
+			var n = 60*i;
+			context.moveTo(100+n,100);
+			context.lineTo(100+n,500);
 		}
 		context.stroke();
 	}
@@ -183,23 +186,24 @@ $(function () {
 				}
 			}
 			
-			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
+			if(mouseX>=0 && mouseX<=100){					//再生ボタンクリック
 				if(mouseY>=50 && mouseY<150){
 					imgpos_x = imgget_x();
 					for(var i=0;i<25;i++){
 						array2[0][i] = array[0][i];
 						array2[1][i] = array[1][i];
 						array2[2][i] = array[2][i];
+						array2[4][i] = array[4][i];
 					}
 					start();	
 				}
 			}
-			if(mouseX>=25 && mouseX<=125){					//停止ボタンクリック
+			if(mouseX>=0 && mouseX<=100){					//停止ボタンクリック
 				if(mouseY>=150 && mouseY<250){
 					stop();
 				}
 			}
-			if(mouseX>=25 && mouseX<=125){					//ゴミ箱ボタンクリック
+			if(mouseX>=0 && mouseX<=100){					//ゴミ箱ボタンクリック
 				if(mouseY>=250 && mouseY<350){
 					gomi();
 				}
@@ -209,7 +213,7 @@ $(function () {
 		//譜面クリック位置検出関数
 		function humen(mouseX,mouseY,icon){
 			if(pf==1 || gf==1 || tf==1 || vf==1){
-				if(mouseX>=150 && mouseX<=1300){			//譜面クリック
+				if(mouseX>=100 && mouseX<=1300){			//譜面クリック
 					var count=0;				
 					for(var i=500;i>=140;i-=40){
 						count++;
@@ -225,7 +229,7 @@ $(function () {
 		//画像複製関数
 		function copy(icon,e){
 			adjustXY(e);
-			if(mouseX>=150 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
+			if(mouseX>=100 && mouseX<=1300 && mouseY>=100 && mouseY<=500){
 				for(var i=500;i>=140;i-=40){
 					if(mouseY>=i-40 && mouseY<i){
 						mouseY = i-20;
@@ -233,9 +237,9 @@ $(function () {
 					}
 				}
 				
-				for(var i=150;i<=1300;i+=71.875){
-					if(mouseX>=i && mouseX<i+71.875){
-						mouseX = i+35.9375;
+				for(var i=100;i<=1300;i+=60){
+					if(mouseX>=i && mouseX<i+60){
+						mouseX = i+30;
 						break;
 					}
 				}
@@ -243,6 +247,7 @@ $(function () {
 				array[0][k]=mouseX-20;
 				array[1][k]=mouseY-25;
 				array[2][k]=icon;
+				array[4][k]=beats(array[0][k]);
 				k++;
 			}
 		}
@@ -285,7 +290,7 @@ $(function () {
 		}
 		
 		//音符画像個数調査関数
-		function getlast(arraylast){	
+		function getlast(){	
 			for(var i=0;i<25;i++){
 				if(array2[1][i] != null){
 					arraylast++;
@@ -294,34 +299,64 @@ $(function () {
 			return arraylast;
 		}		
 		
+		//拍数調査関数
+		function beats(x){
+			var beat = 0;
+			for(var i=100;i<=1300;i+=30){
+				if(x>=i && x<i+30){
+					beat++;
+					break;
+				}
+				else beat++;
+			}
+			return beat;
+		}
+		
+		//アニメーション関数
+		function animation(){
+			//for(var i=0;i<fpb;i++){
+				outhaikei();
+				for(var j=0;j<arraylast;j++){
+					array2[0][j] -= moveStep;
+					if(onpu_f[j] == 0){								//描写が必要な音符画像だけ
+						outonpu(array2[0][j],array2[1][j]);			//音符画像の描写
+					}
+				}
+			//}
+			if(loop_a < fpb){
+				loop_a++;
+				setTimeout(animation,moveSpeed-5);
+			}
+		}
+		
+		//出音関数
+		function sound(){
+			//imgpos_x -= moveStep;
+			loop_a = 0;
+			
+			for(var i=0;i<25;i++){
+				if(array2[4][i] == loop_s){			//音を鳴らすべき時間が来たら
+					humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);		//音を鳴らす
+					onpu_f[i] = 1;					//鳴らした音符は描写する必要がない
+				}	
+			}
+			setTimeout(animation,0);			//0[ms]でアニメーション関数を呼び出す
+			if(imgpos_x > 80){
+				loop_s++;
+				setTimeout(sound,bpm);
+			}
+		}
 		
 		//再生処理
 		function start(){
-			var arraylast=0;
-			arraylast = getlast(arraylast);
+			loop_s = 0;
+			arraylast=0;
+			arraylast = getlast();
 			if(imgpos_x != 0){
-				imgpos_x -= moveStep;
-				for(var i=0;i<25;i++){
-					array2[0][i] -= moveStep;
-				}
-				for(var i=0;i<25;i++){
-					if(array2[0][i]>0){
-						if(array2[0][i] <= 130){
-							humen(array2[0][i]+55.9375,array2[1][i]+25,array2[2][i]);	
-							onpu_f[i] = 1;				//音が鳴り次第その音符画像は描写の必要がなくなる
-						}
-						outhaikei();					//背景の描写
-						for(var j=0;j<arraylast;j++){
-							if(onpu_f[j] == 0){			//描写が必要な音符画像だけ
-								outonpu(array2[0][j],array2[1][j]);			//音符画像の描写
-							}
-						}						
-					}
-				}
-				if(imgpos_x > 130){
-					setTimeout(start,moveSpeed);
-				}
+				sound();
+				//animation();
 				if(imgpos_x <= 130){
+					alert("再生終了");
 					stop();
 				}
 			}
@@ -358,13 +393,13 @@ $(function () {
 	function draw2(){
 		var start = new Image();
 		start.src = "gazou/start_button.gif";
-		context.drawImage(start,25,50);
+		context.drawImage(start,0,50);
 		var stop = new Image();
 		stop.src = "gazou/stop_button.gif";
-		context.drawImage(stop,25,150);
+		context.drawImage(stop,0,150);
 		var gomi = new Image();
 		gomi.src = "gazou/keshigomu_1.gif";
-		context.drawImage(gomi,25,250);
+		context.drawImage(gomi,0,250);
 		
 		var piano = new Image();
 		if(pf==1){
