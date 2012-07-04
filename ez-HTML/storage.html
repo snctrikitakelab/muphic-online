@@ -1,0 +1,21 @@
+<!DOCTYPE html> 
+<html lang="ja">
+    <head> 
+        <meta charset="UTF-8">
+        <title>HTML5</title>
+        <script type="text/javascript" src="storage_js.js"
+            charset="UTF-8"></script>
+    </head>
+    <body>
+        <h1>Web Strage Sample</h1>
+        <input type="text" id="memo">
+        <input type="button" value="add"
+                onclick="saveStorage('memo');">
+        <input type="button" value="update"
+                 onclick="loadStorage('msg');">
+        <input type="button" value="reset"
+                 onclick="clearStorage('msg');">
+        <hr>
+        <p id="msg"></p>
+    </body>
+</html>
