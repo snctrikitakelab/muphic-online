@@ -377,10 +377,10 @@ $(function () {
 			 	setTimeout(sound,bpm);
 			 	imgpos_x -= 35.9375;		//1”•ª‚ÌÀ•W
 			}
-			if(array2[3][imgpos_y] == 0){
-					stop();
-					start_f=0;
-					draw2();
+			else{
+				stop();
+				start_f=0;
+				draw2();
 			}
 		}
 		
@@ -410,7 +410,6 @@ $(function () {
 					array[2][i] = null;
 					array[1][i] = null;
 					array[0][i] = null;
-					
 					remember();
 					break;
 				}
@@ -432,10 +431,8 @@ $(function () {
 	
 	//‰æ‘œo—ÍŠÖ”		
 	function draw2(){
-		
 		muphic.src = "gazou/muphic1.gif";
 		context.drawImage(muphic,300,0);
-		
 		start.src = "gazou/start_button.gif";
 		context.drawImage(start,25,100);
 		stop.src = "gazou/stop_button.gif";
