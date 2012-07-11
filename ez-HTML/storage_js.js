@@ -1,28 +1,28 @@
 function saveStorage(id){
-    var data = document.getElementById(id).value;
-    var time = new Date().getTime();
-    localStorage.setItem(time,data);
-//	alert(id);
-    loadStorage('msg');
+	var data = document.getElementById(id).value;
+	var time = new Date().getTime();
+	localStorage.setItem(time,data);
+//	alert(data);
+	loadStorage('msg');
 }
- 
+
 function loadStorage(id){
-    var result = '<table border="1">';
-    for(var i = 0;i < localStorage.length;i++){
-        var key = localStorage.key(i);
-        var value = localStorage.getItem(key);
-        var date = new Date();
-        date.setTime(key);
-        var datestr = date.toGMTString();
-        result += '<tr><td>' + value + '</td><td>' + datestr + '</td></tr>';
+	var result = '<table border="1">';
+	for(var i = 0;i < localStorage.length;i++){
+		var key = localStorage.key(i);
+		var value = localStorage.getItem(key);
+		var date = new Date();
+		date.setTime(key);
+		var datestr = date.toGMTString();
+		result += '<tr><td>' + value + '</td><td>' + datestr + '</td></tr>';
     }
-    result += '</table>';
-    var target = document.getElementById(id);
-    target.innerHTML = result;
+	result += '</table>';
+	var target = document.getElementById(id);
+	target.innerHTML = result;
 }
  
 function clearStorage(){
-    localStorage.clear();
+	localStorage.clear();
 //	alert("all reset");
-    loadStorage('msg');
+	loadStorage('msg');
 }

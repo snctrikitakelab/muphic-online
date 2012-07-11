@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="Shift_JIS">
+	<title></title>
+</head>
+<body>
+<script>
+  console.log('=== 実験開始 ===');
+  console.log('> アイテム数をカウント');
+  console.log(localStorage.length);
+
+  console.log('> ローカルストレージにキーと値を保存する。');
+
+  localStorage.mango = 'マンゴー';
+  localStorage.banana = 'バナナ';
+
+  console.log('> ローカルストレージの値を取り出す');
+  console.log(localStorage.mango);  // マンゴー
+  console.log(localStorage.banana); // バナナ
+  
+  
+  console.log('> インデックス(添字)を使ってキーを取り出す。');
+  console.log(localStorage.key(0)); // banana  なぜか順番が逆＞＜
+  console.log(localStorage.key(1)); // mango
+
+  console.log('> キーの一覧を列挙する');
+  for(var i = 0; i < localStorage.length ; i++) {
+    console.log(localStorage.key(i));    // 'banana','mango'
+  }
+
+  console.log('> キーの一覧を列挙する その２');
+  for(var j in localStorage) {
+    console.log(j);   //  'banana','mango'
+  }
+
+
+  console.log('> 値の一覧を列挙する');
+  for(var j in localStorage) {
+    console.log(localStorage[j]);   //  'バナナ', 'マンゴー'
+  }
+
+
+  console.log('> メソッド経由で値をセット＆ゲット');
+  console.log('> アイテムappleを追加');
+  localStorage.setItem('apple', 'りんご');
+  console.log(localStorage.getItem('apple')); // りんご
+  
+  console.log('> アイテム数をカウント');
+  console.log(localStorage.length);  // 4
+
+
+  console.log('> キーの一覧を列挙する');
+  for(var j in localStorage) {
+    console.log(j);   //  'banana','mango','apple' なぜかappleが最後＞＜
+  }
+
+
+  console.log('> アイテムmangoを削除');
+  localStorage.removeItem('mango');
+
+  console.log('> アイテム数をカウント');
+  console.log(localStorage.length);  // 3
+
+  console.log('> 全アイテムを削除');
+  localStorage.clear();
+
+</script>
+</body>
+</html>
