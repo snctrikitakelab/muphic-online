@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja"  manifest="sample.appcache">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>title</title>
+    <script type="text/javascript">
+    function initial(){
+        document.querySelector('#t').innerHTML = new Date();
+    }
+    </script>
+ </head>
+ <body onload="initial();">
+    <header>
+        <h1>Cache Sample</h1>
+    </header>
+    <article>
+        <p id="msg">AppCache'sample</p>
+        <hr>
+        <p id="t"></p>
+    </article>
+</body>
+</html>

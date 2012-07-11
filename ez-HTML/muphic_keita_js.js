@@ -40,7 +40,6 @@ $(function () {
 	var loop_s = 1;					//関数soundループ回数カウント変数
 	var loop_a = 0;					//関数animationループ回数カウント変数
 	var arraylast = 0;
-	var arraymax = 0;
 
 	var moveStep = 36/fpb;			
 	var moveSpeed = bpm/fpb;		//アニメーションさせるべき速さ
@@ -116,22 +115,18 @@ $(function () {
 			context.fillStyle = "#666666";
 			draw();
 			if(pf==1){
-//				copy("piano_");
 				sflag = "piano_";
 				copy(sflag);
 			}
 			else if(gf==1){
-//				copy("guitar_");
 				sflag = "guitar_";
 				copy(sflag);
 			}
 			else if(tf==1){
-//				copy("tranpet_");
 				sflag = "tranpet_";
 				copy(sflag);
 			}
 			else if(vf==1){
-//				copy("violin_");
 				sflag = "violin_";
 				copy(sflag);
 			}	
@@ -193,7 +188,7 @@ $(function () {
 			
 			if(mouseX>=25 && mouseX<=125){					//再生ボタンクリック
 				if(mouseY>=100 && mouseY<200){
-					imgpos_x = imgget_x();
+					imgget();
 					if(imgpos_x != 0){
 						for(var i=0;i<25;i++){
 							array2[0][i] = array[0][i];
@@ -202,7 +197,6 @@ $(function () {
 							array2[3][i] = array[3][i];
 							array2[4][i] = array[4][i];
 						}
-						arraylast = getlast();
 						start_f = 1;
 						eraser_f = 0;
 						start();
@@ -253,8 +247,7 @@ $(function () {
 						}
 					}
 				}
-			}
-			
+			}			
 		}
 		
 		//画像複製関数
@@ -284,7 +277,7 @@ $(function () {
 		}
 		
 		//x,y座標の最大値取得関数
-		function imgget_x(){
+		function imgget(){
 			var a = 0;
 			imgpos_x = 0;
 			imgpos_y = 0;
@@ -303,7 +296,6 @@ $(function () {
 					a++;
 				}	
 			}
-			return imgpos_x;
 		}
 		
 		//背景出力関数
@@ -330,21 +322,7 @@ $(function () {
 					arraylast = i;
 				}
 			}
-			return arraylast;
 		}
-		
-		//最後尾音符画像配列番号調査関数
-		function getmax(){
-			arraymax=0;
-			for(var i=0;i<25;i++){
-				if(array2[0][arraymax] < array2[0][i]){
-					arraymax = i;
-				}
-			}
-			return arraymax;
-		
-		}
-		
 		
 		//拍数調査関数
 		function beats(x){
@@ -388,7 +366,6 @@ $(function () {
 		//出音関数
 		function sound(){
 			loop_a = 0;
-			arraymax = getmax();
 			setTimeout(animation,0);
 			for(var i=0;i<25;i++){
 				if(array2[4][i] == 0 && array2[3][i] == 1){				//音を鳴らすべき時間が来たら
@@ -396,13 +373,11 @@ $(function () {
 					array2[3][i] = 0;					//鳴らした音符は描写する必要がない
 				}	
 			}
-			//alert(arraymax);
-			if(array2[3][arraymax] == 1){
+			if(array2[3][imgpos_y] == 1){
 			 	setTimeout(sound,bpm);
 			 	imgpos_x -= 35.9375;		//1拍分の座標
-				//alert(imgpos_x);
 			}
-			if(array2[3][arraymax] == 0){
+			if(array2[3][imgpos_y] == 0){
 					stop();
 					start_f=0;
 					draw2();
@@ -411,8 +386,8 @@ $(function () {
 		
 		//再生処理
 		function start(){
-			arraylast = getlast();
-			if(imgpos_x >= 110){
+			getlast();
+			if(imgpos_x >= 110){				//音符がおいてあったら
 				sound();
 			}
 		}
@@ -461,8 +436,6 @@ $(function () {
 		muphic.src = "gazou/muphic1.gif";
 		context.drawImage(muphic,300,0);
 		
-		context.shadowBlur =20;
-		context.shadowColor="rgb(0,0,0)";
 		start.src = "gazou/start_button.gif";
 		context.drawImage(start,25,100);
 		stop.src = "gazou/stop_button.gif";

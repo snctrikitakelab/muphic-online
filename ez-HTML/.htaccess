@@ -1,0 +1,13 @@
+AddType text/cache-manifesst .appcache
+
+CACHE:
+#… …キャッシュするファイルを書く… …
+
+
+NETWORK:
+#… …キャッシュしないファイルを書く… …
+
+
+FALLBACK:
+#… …問題発生時に表示するページの指定… …
+

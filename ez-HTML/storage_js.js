@@ -2,7 +2,7 @@ function saveStorage(id){
     var data = document.getElementById(id).value;
     var time = new Date().getTime();
     localStorage.setItem(time,data);
-    alert(id);
+//	alert(id);
     loadStorage('msg');
 }
  
@@ -23,6 +23,6 @@ function loadStorage(id){
  
 function clearStorage(){
     localStorage.clear();
-    alert("all reset");
+//	alert("all reset");
     loadStorage('msg');
 }
